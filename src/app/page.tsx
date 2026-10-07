@@ -1,5 +1,6 @@
 "use client";
 
+import { MolduraAluno } from "@/components/layout/MolduraAluno";
 import { Splash } from "@/components/ui/Splash";
 import { useAuth } from "@/contexts/auth-context";
 import { useAgora } from "@/contexts/relogio-context";
@@ -16,5 +17,9 @@ export default function Home() {
     router.replace(sessao ? "/dashboard" : "/login");
   }, [pronto, agora, sessao, router]);
 
-  return <Splash />;
+  return (
+    <MolduraAluno>
+      <Splash />
+    </MolduraAluno>
+  );
 }

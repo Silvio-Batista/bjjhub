@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { equipeService } from "../src/services/equipe-service";
 import { aulaService } from "../src/services/aula-service";
 import { financeiroService } from "../src/services/financeiro-service";
 import { notificacaoService } from "../src/services/notificacao-service";
@@ -91,5 +92,47 @@ assert.equal(proximas[1]?.horarioInicio, "18:00");
 
 const sugerida = aulaService.sugerirCheckin(hoje, [], ["2026-10-07-jiu-jitsu-adulto"]);
 assert.equal(sugerida?.id, "2026-10-07-no-gi");
+
+const equipe = equipeService.obterResumo(hoje);
+assert.equal(equipe.alunosAtivos, 9);
+assert.equal(equipe.pagamentosAtrasados, 2);
+assert.equal(equipe.frequenciaMedia, 78);
+assert.equal(equipe.aulasHoje, 2);
+
+const silvio = equipeService.obterAluno(1, hoje);
+assert.equal(silvio?.resumo.frequencia, 78);
+assert.equal(silvio?.resumo.statusFinanceiro, "atrasado");
+assert.equal(silvio?.resumo.faixa, "Azul");
+assert.equal(silvio?.plano.valor, 100);
+
+const alunos = equipeService.listarAlunos(hoje);
+assert.equal(alunos.length, 10);
+assert.equal(alunos.filter((item) => item.ativo).length, 9);
+
+const pagamentos = equipeService.listarPagamentos(hoje);
+assert.equal(pagamentos.length, 9);
+assert.equal(pagamentos.filter((item) => item.status === "atrasado").length, 2);
+assert.equal(pagamentos.filter((item) => item.status === "pendente").length, 3);
+assert.equal(pagamentos.filter((item) => item.status === "pago").length, 4);
+assert.ok(
+  pagamentos
+    .filter((item) => item.planoNome === "Plano competidor")
+    .every((item) => item.mensalidade.valor === 180),
+);
+assert.ok(
+  pagamentos
+    .filter((item) => item.planoNome === "Plano mensal adultos")
+    .every((item) => item.mensalidade.valor === 100),
+);
+
+const helena = alunos.find((item) => item.nome === "Helena Duarte");
+assert.equal(helena?.frequencia, 55);
+assert.equal(helena?.statusFinanceiro, "atrasado");
+assert.equal(helena?.planoValor, 100);
+
+const lucia = alunos.find((item) => item.nome === "Lúcia Ferreira");
+assert.equal(lucia?.frequencia, 94);
+assert.equal(lucia?.planoValor, 180);
+assert.equal(lucia?.statusFinanceiro, "pago");
 
 console.log("regras ok");

@@ -34,9 +34,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="pt-BR" className={`${outfit.variable} h-full antialiased`}>
       <body className="h-full bg-black text-ink">
-        <div className="mx-auto h-dvh w-full max-w-[440px] overflow-hidden bg-bg text-ink">
-          <AppProviders>{children}</AppProviders>
-        </div>
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   );

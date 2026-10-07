@@ -1,6 +1,6 @@
 # BJJHub
 
-Aplicativo do aluno da BJJHub Academy. Esta versão é o MVP mobile: da matrícula à faixa, com aulas, check-in simulado, graduação, financeiro e perfil. Os dados são locais. Não há backend.
+Aplicativo da BJJHub Academy. O aluno usa o app mobile: da matrícula à faixa, com aulas, check-in simulado, graduação, financeiro e perfil. A equipe usa a mesa em tablet ou desktop: alunos, pagamentos e presenças. Os dados são locais. Não há backend.
 
 ## Como rodar
 
@@ -23,6 +23,13 @@ npm run lint
 
 Na tela de entrada também há o atalho “Preencher acesso de demonstração”.
 
+## Acesso da equipe
+
+- E-mail: `sensei.q8n4wk@bjjhub.demo`
+- Senha: `vL6pR2xm`
+
+A tela de login do aluno tem o link “Área da equipe”. A da equipe mostra o acesso e o link de volta para o aluno.
+
 ## Rotas
 
 - `/login`
@@ -35,7 +42,12 @@ Na tela de entrada também há o atalho “Preencher acesso de demonstração”
 - `/perfil` e `/perfil/editar`
 - `/historico`
 - `/configuracoes`
+- `/equipe/login`
+- `/equipe`
+- `/equipe/alunos` e `/equipe/alunos/[id]`
+- `/equipe/pagamentos`
+- `/equipe/presencas`
 
-Sessão, perfil editado, notificações, confirmações de aula, check-ins e preferências ficam no `localStorage` deste navegador.
+A sessão do aluno e a sessão da equipe ficam em chaves separadas do `localStorage`. Perfil editado, notificações, confirmações de aula, check-ins e preferências também ficam neste navegador.
 
 O check-in não usa câmera. O botão simula a leitura do QR e lança a aula do dia que ainda não tem presença. A mensalidade não cobra de verdade.
