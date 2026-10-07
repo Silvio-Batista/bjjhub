@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #050609;
+  --bg-secondary: #111318;
+  --card: #2e3238;
+  --card-secondary: #252930;
+  --primary: #e31b2b;
+  --primary-secondary: #c41725;
+  --text: #ffffff;
+  --text-secondary: #a8abb2;
+  --border: #444850;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --info: #2196f3;
+  --wine: #250930;
+  --dust: #a44850;
+  color-scheme: dark;
+}
+
+:root[data-tema="grafite"] {
+  --bg: #111318;
+  --bg-secondary: #181b20;
+  --card: #303438;
+  --card-secondary: #252930;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-card: var(--card);
+  --color-card-secondary: var(--card-secondary);
+  --color-primary: var(--primary);
+  --color-primary-secondary: var(--primary-secondary);
+  --color-ink: var(--text);
+  --color-muted: var(--text-secondary);
+  --color-line: var(--border);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --font-sans: var(--font-outfit), "Segoe UI", sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  background: #000000;
+  color: var(--text);
+}
+
+body {
+  font-family: var(--font-outfit), "Segoe UI", sans-serif;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a,
+input {
+  touch-action: manipulation;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+input:-webkit-autofill {
+  -webkit-text-fill-color: var(--text);
+  caret-color: var(--text);
+  transition: background-color 9999s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
