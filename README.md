@@ -50,4 +50,6 @@ A tela de login do aluno tem o link “Área da equipe”. A da equipe mostra o 
 
 A sessão do aluno e a sessão da equipe ficam em chaves separadas do `localStorage`. Perfil editado, notificações, confirmações de aula, check-ins e preferências também ficam neste navegador.
 
+Na ficha `/equipe/alunos/[id]` o sensei registra graduação, frequência e pagamento informativo, e define a mensalidade: valor, desconto e taxa de graduação. O caderno fica no `localStorage` e o app do aluno de demonstração lê os mesmos lançamentos.
+
 O check-in não usa câmera. O botão simula a leitura do QR e lança a aula do dia que ainda não tem presença. A mensalidade não cobra de verdade.
