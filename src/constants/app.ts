@@ -13,6 +13,7 @@ export const CHAVES = {
   checkins: "bjjhub.checkins",
   confirmacoes: "bjjhub.confirmacoes",
   preferencias: "bjjhub.preferencias",
+  caderno: "bjjhub.caderno",
 } as const;
 
 export const CREDENCIAIS_DEMO = {
