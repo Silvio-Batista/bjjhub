@@ -6,19 +6,25 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { Splash } from "@/components/ui/Splash";
 import { useAgora } from "@/contexts/relogio-context";
 import { rotuloStatusPresenca } from "@/domain/equipe/resumo";
+import { LancamentosEquipe } from "@/features/equipe/LancamentosEquipe";
 import { MolduraPagina, SeloMensalidade, SeloPresenca } from "@/features/equipe/pecas";
+import { useCaderno } from "@/hooks/useCaderno";
 import { equipeService } from "@/services/equipe-service";
 import { formatarCompetencia, formatarData } from "@/utils/datas";
 import { formatarMoeda, rotuloFaixaGrau } from "@/utils/formatacao";
 import { calcularStatusFinanceiro } from "@/utils/regras";
 import { UserX } from "lucide-react";
 import Link from "next/link";
+import { useMemo } from "react";
 
 export function AlunoEquipeScreen({ alunoId }: { alunoId: number }) {
   const agora = useAgora();
+  const caderno = useCaderno();
+  const ficha = useMemo(
+    () => (agora && Number.isFinite(alunoId) ? equipeService.obterAluno(alunoId, agora, caderno) : null),
+    [agora, alunoId, caderno],
+  );
   if (!agora) return <Splash />;
-
-  const ficha = Number.isFinite(alunoId) ? equipeService.obterAluno(alunoId, agora) : null;
   if (!ficha) {
     return (
       <MolduraPagina>
@@ -78,8 +84,20 @@ export function AlunoEquipeScreen({ alunoId }: { alunoId: number }) {
             <div>
               <h2 className="text-sm font-semibold">Plano</h2>
               <p className="mt-1 text-sm text-muted">{plano.nome}</p>
-              <p className="mt-2 text-lg font-semibold tabular-nums">{formatarMoeda(plano.valor)}</p>
-              <p className="text-xs text-muted">por mês</p>
+              <p className="mt-2 text-lg font-semibold tabular-nums">
+                {formatarMoeda(ficha.valorMensalidade.liquido)}
+              </p>
+              <p className="text-xs text-muted">
+                por mês
+                {ficha.valorMensalidade.descontoAplicado > 0
+                  ? ` · desconto de ${formatarMoeda(ficha.valorMensalidade.descontoAplicado)}`
+                  : ""}
+              </p>
+              {ficha.contrato.taxaGraduacao > 0 ? (
+                <p className="mt-2 text-sm text-muted">
+                  Taxa de graduação {formatarMoeda(ficha.contrato.taxaGraduacao)}, informativa.
+                </p>
+              ) : null}
             </div>
             <SeloMensalidade status={resumo.statusFinanceiro} />
           </div>
@@ -94,6 +112,8 @@ export function AlunoEquipeScreen({ alunoId }: { alunoId: number }) {
           )}
         </section>
       </div>
+
+      <LancamentosEquipe ficha={ficha} agora={agora} />
 
       <section className="mt-8">
         <h2 className="mb-3 text-sm font-semibold tracking-wide text-muted uppercase">
