@@ -23,7 +23,7 @@ export function MobileModal({
     };
     window.addEventListener("keydown", aoTeclar);
     return () => window.removeEventListener("keydown", aoTeclar);
-  }, [aberto, onFeclar]);
+  }, [aberto, onFechar]);
 
   if (!aberto) return null;
 
