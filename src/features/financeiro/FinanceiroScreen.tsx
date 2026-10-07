@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/Card";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { useAgora } from "@/contexts/relogio-context";
+import { useCaderno } from "@/hooks/useCaderno";
 import { financeiroService } from "@/services/financeiro-service";
 import { formatarData } from "@/utils/datas";
 import { formatarMoeda } from "@/utils/formatacao";
@@ -26,9 +27,10 @@ const ROTULO = {
 
 export function FinanceiroScreen() {
   const agora = useAgora();
+  const caderno = useCaderno();
   const painel = useMemo(
-    () => (agora ? financeiroService.obterPainel(agora) : null),
-    [agora],
+    () => (agora ? financeiroService.obterPainel(agora, 1, caderno) : null),
+    [agora, caderno],
   );
 
   if (!agora || !painel) return null;
@@ -55,6 +57,17 @@ export function FinanceiroScreen() {
             {formatarMoeda(atual.valor)}
           </p>
           <p className="mt-1 text-sm text-muted">Mensalidade · vence em {formatarData(atual.vencimento)}</p>
+          {painel.descontoAplicado > 0 ? (
+            <p className="mt-1 text-sm text-muted">
+              Valor base {formatarMoeda(painel.valorBase)} · desconto de{" "}
+              {formatarMoeda(painel.descontoAplicado)}
+            </p>
+          ) : null}
+          {painel.taxaGraduacao > 0 ? (
+            <p className="mt-2 text-sm text-muted">
+              Taxa de graduação {formatarMoeda(painel.taxaGraduacao)}. Informativa, sem cobrança.
+            </p>
+          ) : null}
           <p
             className={
               atual.situacao.acessoLiberado
