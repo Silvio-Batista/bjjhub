@@ -1,4 +1,5 @@
-import type { Aluno, Checkin, RegistroPresenca, ResumoPresencas } from "@/types";
+import { contarAulasNoGrau } from "@/domain/equipe/ajustes";
+import type { Aluno, CadernoEquipe, Checkin, RegistroPresenca, ResumoPresencas } from "@/types";
 import { alunoService } from "@/services/aluno-service";
 import {
   calcularDiasNaFaixa,
@@ -18,8 +19,8 @@ export function jaPresente(
   );
 }
 
-export function montarHistorico(checkins: Checkin[]): RegistroPresenca[] {
-  const base = alunoService.getHistorico();
+export function montarHistorico(checkins: Checkin[], caderno?: CadernoEquipe): RegistroPresenca[] {
+  const base = alunoService.getHistorico(caderno);
   const extras: RegistroPresenca[] = checkins
     .filter((item) => !base.some((registro) => registro.aulaId === item.aulaId))
     .map((item) => ({
@@ -42,11 +43,13 @@ export function montarHistorico(checkins: Checkin[]): RegistroPresenca[] {
 export function resumirPresencas(
   checkins: Checkin[],
   referencia: Date,
-  perfil: Aluno = alunoService.getPerfil(),
+  perfil?: Aluno,
+  caderno?: CadernoEquipe,
 ): ResumoPresencas {
+  const perfilAtual = perfil ?? alunoService.getPerfil(caderno);
   const base = alunoService.getContagens();
-  const historico = montarHistorico(checkins);
-  const detalhe = alunoService.getHistorico();
+  const historico = montarHistorico(checkins, caderno);
+  const detalhe = alunoService.getHistorico(caderno);
   const novos = checkins.filter(
     (item) => !detalhe.some((registro) => registro.aulaId === item.aulaId),
   );
@@ -57,14 +60,17 @@ export function resumirPresencas(
   const presencas = base.presencasAnteriores + presencasDetalhe + novos.length;
   const ausencias = base.ausenciasAnteriores + ausenciasDetalhe;
   const justificadas = base.justificadasAnteriores + justificadasDetalhe;
-  const aulasDetalheNaFaixa = detalhe.filter(
-    (item) => item.status === "presente" && item.data >= perfil.faixa.dataGraduacao,
-  ).length;
-  const aulasNovasNaFaixa = novos.filter(
-    (item) => item.data >= perfil.faixa.dataGraduacao,
-  ).length;
-  const aulasNaFaixa = base.aulasNaFaixaAnteriores + aulasDetalheNaFaixa + aulasNovasNaFaixa;
-  const diasNaFaixa = calcularDiasNaFaixa(perfil.faixa.dataGraduacao, referencia);
+  const registrosNoGrau = [
+    ...detalhe.map((item) => ({ status: item.status, data: item.data })),
+    ...novos.map((item) => ({ status: "presente" as const, data: item.data })),
+  ];
+  const aulasNaFaixa = contarAulasNoGrau(
+    base.aulasNaFaixaAnteriores,
+    registrosNoGrau,
+    perfilAtual.faixa.dataGraduacao,
+    alunoService.getPerfilBase().faixa.dataGraduacao,
+  );
+  const diasNaFaixa = calcularDiasNaFaixa(perfilAtual.faixa.dataGraduacao, referencia);
   const frequencia = calcularFrequencia(presencas, ausencias, justificadas);
 
   return {
@@ -77,8 +83,8 @@ export function resumirPresencas(
     aulasNaFaixa,
     diasNaFaixa,
     progresso: calcularProgressoGraduacao({
-      faixa: perfil.faixa.nome,
-      grau: perfil.faixa.grau,
+      faixa: perfilAtual.faixa.nome,
+      grau: perfilAtual.faixa.grau,
       diasNaFaixa,
       aulasNaFaixa,
     }),

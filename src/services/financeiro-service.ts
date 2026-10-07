@@ -1,5 +1,11 @@
+import {
+  aplicarNaMensalidade,
+  calcularValorMensalidade,
+  contratoDoAluno,
+} from "@/domain/equipe/ajustes";
 import { financeiroRepository } from "@/repositories/financeiro-repository";
-import type { Mensalidade, Plano, StatusFinanceiro } from "@/types";
+import { lerCaderno } from "@/services/caderno-service";
+import type { CadernoEquipe, Mensalidade, Plano, StatusFinanceiro } from "@/types";
 import { calcularStatusFinanceiro } from "@/utils/regras";
 
 export interface PainelFinanceiro {
@@ -11,6 +17,9 @@ export interface PainelFinanceiro {
   metodoPreferido: string;
   pagos: number;
   pendentes: number;
+  valorBase: number;
+  descontoAplicado: number;
+  taxaGraduacao: number;
 }
 
 function metodoPreferido(mensalidades: Mensalidade[]): string {
@@ -24,12 +33,20 @@ function metodoPreferido(mensalidades: Mensalidade[]): string {
 }
 
 export const financeiroService = {
-  obterPainel(referencia: Date): PainelFinanceiro {
+  obterPainel(referencia: Date, alunoId = 1, caderno: CadernoEquipe = lerCaderno()): PainelFinanceiro {
     const plano = financeiroRepository.getPlano();
-    const lista = financeiroRepository.listarMensalidades().map((item) => ({
-      ...item,
-      situacao: calcularStatusFinanceiro(item, referencia),
-    }));
+    const contrato = contratoDoAluno(caderno, alunoId, plano.valor);
+    const calculado = calcularValorMensalidade(contrato.valorBase, contrato.desconto);
+    const lista = financeiroRepository.listarMensalidades().map((item) => {
+      const ajuste = caderno.pagamentos.find(
+        (pagamento) => pagamento.alunoId === alunoId && pagamento.competencia === item.competencia,
+      );
+      const mensalidade = aplicarNaMensalidade(item, contrato, ajuste);
+      return {
+        ...mensalidade,
+        situacao: calcularStatusFinanceiro(mensalidade, referencia),
+      };
+    });
     const ordenadas = [...lista].sort((a, b) => b.competencia.localeCompare(a.competencia));
     const atual = ordenadas[0];
     if (!atual) {
@@ -50,6 +67,9 @@ export const financeiroService = {
       metodoPreferido: metodoPreferido(lista),
       pagos: lista.filter((item) => item.situacao.status === "pago").length,
       pendentes: lista.filter((item) => item.situacao.status !== "pago").length,
+      valorBase: calculado.bruto,
+      descontoAplicado: calculado.descontoAplicado,
+      taxaGraduacao: contrato.taxaGraduacao,
     };
   },
 };
