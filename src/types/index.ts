@@ -262,8 +262,12 @@ export interface FichaAluno {
   aluno: Aluno;
   plano: Plano;
   resumo: ResumoAluno;
-  mensalidades: Mensalidade[];
+  mensalidades: MensalidadeEquipe[];
   presencasRecentes: RegistroPresenca[];
+  contrato: ContratoMensalidade;
+  valorMensalidade: ValorMensalidade;
+  promocoes: Promocao[];
+  pagamentos: AjustePagamento[];
 }
 
 export interface LancamentoEquipe {
@@ -289,4 +293,51 @@ export interface ResumoEquipe {
   pagamentosAtrasados: number;
   frequenciaMedia: number;
   aulasHoje: number;
+}
+
+export type MetodoPagamento = "Dinheiro" | "Pix" | "Cartão";
+
+export interface DescontoMensalidade {
+  tipo: "nenhum" | "percentual" | "fixo";
+  valor: number;
+}
+
+export interface Promocao {
+  id: string;
+  alunoId: number;
+  faixa: FaixaNome;
+  grau: number;
+  data: string;
+  nota: string;
+}
+
+export interface AjustePagamento {
+  id: string;
+  alunoId: number;
+  competencia: string;
+  pago: boolean;
+  valor: number;
+  data: string;
+  metodo: MetodoPagamento | "";
+  nota: string;
+}
+
+export interface ContratoMensalidade {
+  alunoId: number;
+  valorBase: number;
+  desconto: DescontoMensalidade;
+  taxaGraduacao: number;
+}
+
+export interface CadernoEquipe {
+  promocoes: Promocao[];
+  presencas: RegistroPresencaEquipe[];
+  pagamentos: AjustePagamento[];
+  contratos: ContratoMensalidade[];
+}
+
+export interface ValorMensalidade {
+  bruto: number;
+  descontoAplicado: number;
+  liquido: number;
 }
