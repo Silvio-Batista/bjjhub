@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" fill="none">
+  <rect width="64" height="64" rx="16" fill="#111318"/>
+  <rect x="1" y="1" width="62" height="62" rx="15" stroke="#444850"/>
+  <path fill="#E31B2B" d="M15 12h10v40H15z"/>
+  <path fill="#E31B2B" d="M25 12h20v9H25z"/>
+  <path fill="#E31B2B" d="M39 21h10v9H39z"/>
+  <path fill="#C41725" d="M25 29h16v8H25z"/>
+  <path fill="#E31B2B" d="M39 37h10v9H39z"/>
+  <path fill="#E31B2B" d="M25 43h20v9H25z"/>
+  <path fill="#A44850" d="M25 12h10L25 22z"/>
+  <text x="80" y="32" fill="#FFFFFF" font-family="Segoe UI, sans-serif" font-size="26" font-weight="650">BJJHub</text>
+  <text x="80" y="50" fill="#A8ABB2" font-family="Segoe UI, sans-serif" font-size="12">Sua academia em evolução</text>
+</svg>
