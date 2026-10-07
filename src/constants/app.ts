@@ -7,6 +7,7 @@ export const APP = {
 
 export const CHAVES = {
   sessao: "bjjhub.sessao",
+  sessaoEquipe: "bjjhub.sessaoEquipe",
   perfil: "bjjhub.perfil",
   notificacoes: "bjjhub.notificacoes",
   checkins: "bjjhub.checkins",
@@ -17,6 +18,11 @@ export const CHAVES = {
 export const CREDENCIAIS_DEMO = {
   email: "aluno.k4n8wq@bjjhub.demo",
   senha: "tR9mX4pc",
+} as const;
+
+export const CREDENCIAIS_EQUIPE = {
+  email: "sensei.q8n4wk@bjjhub.demo",
+  senha: "vL6pR2xm",
 } as const;
 
 export const REQUISITOS_GRAU = {

@@ -3,27 +3,25 @@
 import { LogoMark } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/Button";
 import { Campo } from "@/components/ui/Campo";
-import { MobileModal } from "@/components/ui/MobileModal";
 import { Splash } from "@/components/ui/Splash";
-import { APP, CREDENCIAIS_DEMO } from "@/constants/app";
-import { useAuth } from "@/contexts/auth-context";
+import { CREDENCIAIS_EQUIPE } from "@/constants/app";
+import { useEquipeAuth } from "@/contexts/equipe-auth-context";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export function LoginScreen() {
-  const { entrar, sessao, pronto } = useAuth();
+export function LoginEquipeScreen() {
+  const { entrar, sessao, pronto } = useEquipeAuth();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
-  const [recuperar, setRecuperar] = useState(false);
 
   useEffect(() => {
-    if (pronto && sessao) router.replace("/dashboard");
+    if (pronto && sessao) router.replace("/equipe");
   }, [pronto, sessao, router]);
 
   if (!pronto || sessao) return <Splash />;
@@ -37,38 +35,30 @@ export function LoginScreen() {
       setErro(resultado.erro);
       return;
     }
-    router.replace("/dashboard");
+    router.replace("/equipe");
   }
 
   return (
-    <div
-      className="h-full overflow-y-auto bg-bg pt-[env(safe-area-inset-top)]"
-      style={{
-        backgroundImage: "url(/assets/backgrounds/login-dark.svg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
-      <div className="flex min-h-full flex-col px-5 pt-16 pb-10">
-        <div className="mb-10 flex flex-col items-center text-center">
-          <LogoMark size={72} />
-          <h1 className="mt-4 text-[28px] font-semibold tracking-tight">{APP.nome}</h1>
-          <p className="mt-1 text-sm text-muted">{APP.tagline}</p>
+    <div className="flex h-dvh items-center justify-center overflow-y-auto bg-bg px-4 py-10">
+      <div className="w-full max-w-[420px]">
+        <div className="mb-8 flex flex-col items-center text-center">
+          <LogoMark size={64} />
+          <h1 className="mt-4 text-[26px] font-semibold tracking-tight">Área da equipe</h1>
+          <p className="mt-1 text-sm text-muted">Secretaria e senseis da BJJHub Academy</p>
         </div>
 
-        <form onSubmit={aoEntrar} className="rounded-2xl bg-bg-secondary p-4" noValidate>
+        <form onSubmit={aoEntrar} className="rounded-2xl bg-bg-secondary p-5" noValidate>
           <div className="flex flex-col gap-4">
             <Campo
               label="E-mail"
               type="email"
               autoComplete="username"
-              inputMode="email"
               value={email}
               onChange={(evento) => {
                 setEmail(evento.target.value);
                 setErro(null);
               }}
-              placeholder="seu@email.com"
+              placeholder="sensei@bjjhub.demo"
             />
             <div className="relative">
               <Campo
@@ -95,50 +85,34 @@ export function LoginScreen() {
                 {erro}
               </p>
             ) : null}
-            <button
-              type="button"
-              className="self-start text-sm text-muted"
-              onClick={() => setRecuperar(true)}
-            >
-              Esqueci minha senha
-            </button>
             <Button type="submit" disabled={enviando}>
               {enviando ? "Entrando..." : "Entrar"}
             </Button>
           </div>
         </form>
 
+        <p className="mt-5 text-center text-xs leading-5 text-muted">
+          Demonstração: {CREDENCIAIS_EQUIPE.email}
+          <span className="mx-1.5 text-line">·</span>
+          {CREDENCIAIS_EQUIPE.senha}
+        </p>
         <button
           type="button"
-          className="mt-6 text-center text-sm text-muted"
+          className="mt-2 w-full text-center text-sm text-muted"
           onClick={() => {
-            setEmail(CREDENCIAIS_DEMO.email);
-            setSenha(CREDENCIAIS_DEMO.senha);
+            setEmail(CREDENCIAIS_EQUIPE.email);
+            setSenha(CREDENCIAIS_EQUIPE.senha);
             setErro(null);
           }}
         >
           Preencher acesso de demonstração
         </button>
         <p className="mt-8 text-center">
-          <Link href="/equipe/login" className="text-xs text-muted/80">
-            Área da equipe
+          <Link href="/login" className="text-xs text-muted/80">
+            Acesso do aluno
           </Link>
         </p>
       </div>
-
-      <MobileModal
-        aberto={recuperar}
-        titulo="Recuperar senha"
-        onFechar={() => setRecuperar(false)}
-      >
-        <p className="text-sm leading-6 text-muted">
-          Se este e-mail estiver cadastrado, a academia envia as instruções de
-          recuperação. Nesta demonstração, use o acesso fornecido pela secretaria.
-        </p>
-        <Button className="mt-5" onClick={() => setRecuperar(false)}>
-          Entendi
-        </Button>
-      </MobileModal>
     </div>
   );
 }

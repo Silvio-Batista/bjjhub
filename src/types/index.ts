@@ -207,3 +207,86 @@ export interface ResumoPresencas {
   progresso: ProgressoGraduacao;
   historico: RegistroPresenca[];
 }
+
+export interface Sensei {
+  id: number;
+  nome: string;
+  email: string;
+  tratamento: "Professor" | "Professora";
+}
+
+export interface SessaoEquipe {
+  senseiId: number;
+  email: string;
+  iniciadaEm: string;
+}
+
+export interface VinculoAluno {
+  alunoId: number;
+  planoId: string;
+  ativo: boolean;
+}
+
+export interface MensalidadeEquipe extends Mensalidade {
+  alunoId: number;
+}
+
+export interface RegistroPresencaEquipe extends RegistroPresenca {
+  alunoId: number;
+}
+
+export interface ContagemEquipe extends ContagemBase {
+  alunoId: number;
+}
+
+export interface ResumoAluno {
+  id: number;
+  nome: string;
+  ativo: boolean;
+  faixa: FaixaNome;
+  grau: number;
+  planoNome: string;
+  planoValor: number;
+  frequencia: number;
+  rotuloFrequencia: "Boa" | "Regular" | "Baixa";
+  presencas: number;
+  ausencias: number;
+  justificadas: number;
+  statusFinanceiro: StatusMensalidade;
+  valorEmAberto: number;
+  competencia: string;
+  vencimento: string;
+}
+
+export interface FichaAluno {
+  aluno: Aluno;
+  plano: Plano;
+  resumo: ResumoAluno;
+  mensalidades: Mensalidade[];
+  presencasRecentes: RegistroPresenca[];
+}
+
+export interface LancamentoEquipe {
+  alunoId: number;
+  nome: string;
+  ativo: boolean;
+  faixa: FaixaNome;
+  planoNome: string;
+  mensalidade: Mensalidade;
+  status: StatusMensalidade;
+}
+
+export interface LinhaPresenca {
+  id: string;
+  alunoId: number;
+  nome: string;
+  faixa: FaixaNome;
+  registro: RegistroPresenca;
+}
+
+export interface ResumoEquipe {
+  alunosAtivos: number;
+  pagamentosAtrasados: number;
+  frequenciaMedia: number;
+  aulasHoje: number;
+}
